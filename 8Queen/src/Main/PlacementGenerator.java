@@ -12,9 +12,15 @@ package Main;
 public class PlacementGenerator extends Thread
 {
 
+    private Middle mid;
+
+    PlacementGenerator(Middle mid)
+    {
+        this.mid = mid;
+    }
     int[] board = new int[]
     {
-        0, 1, 2, 3, 4, 5, 6, 7
+        0, 0, 0, 0, 0, 0, 0, 0
     };
     boolean[] column = new boolean[]
     {
@@ -24,19 +30,20 @@ public class PlacementGenerator extends Thread
     @Override
     public void run()
     {
-
+        createPermutations(0);
     }
 
     public void createPermutations(int row)
     {
+
         if (row == 8)
         {
-
+            //System.out.println("{" + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}");
+            mid.addToQue(board);
             return;
         }
 
         for (int col = 0; col < 8; col++)
-        {
             if (column[col])
             {
                 column[col] = false;
@@ -45,7 +52,5 @@ public class PlacementGenerator extends Thread
                 column[col] = true;
 
             }
-        }
     }
-
 }

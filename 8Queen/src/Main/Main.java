@@ -16,15 +16,19 @@ public class Main
 
     public static void main(String args[])
     {
-        int numberOfverifiers = 3;
+        int numberOfverifiers = 1;
+
+        Middle mid = new Middle();
+        PlacementGenerator pg = new PlacementGenerator(mid);
+        pg.start();
+
         ArrayList<PlacementVerifier> verifiers = new ArrayList<>(numberOfverifiers);
 
-        PlacementGenerator pg = new PlacementGenerator();
+        for (int i = 0; i < numberOfverifiers; i++)
+            verifiers.add(new PlacementVerifier(mid));
 
-        for (int i = 0; i < 3; i++)
-        {
-            verifiers.add(new PlacementVerifier());
-        }
+        for (PlacementVerifier pv : verifiers)
+            new Thread(pv).start();
 
     }
 }
