@@ -22,9 +22,10 @@ import java.util.logging.Logger;
 public class Middle
 {
 
-    private LinkedBlockingQueue<int[]> que = new LinkedBlockingQueue<>();
+    private ConcurrentLinkedQueue<int[]> que = new ConcurrentLinkedQueue<>();
     private AtomicInteger solutions = new AtomicInteger();
     private int submits = 0;
+    private AtomicInteger queueSize = new AtomicInteger();
     private int take = 0;
 
     public void addToQue(int[] board)
@@ -33,6 +34,7 @@ public class Middle
         System.out.println("submit:" + submits + "{, " + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}"
         );
         submits++;
+        queueSize.incrementAndGet();
         que.offer(board);
     }
 
@@ -43,7 +45,14 @@ public class Middle
 
     public int[] getFromQue() throws InterruptedException
     {
-        int[] board = que.take();
+
+        while (queueSize.decrementAndGet() < 0)
+        {
+            queueSize.incrementAndGet();
+            waitt();
+        }
+
+        int[] board = que.poll();
         //if (que.size() % 100 == 0)
         //  {
 
@@ -51,5 +60,17 @@ public class Middle
         take++;
         //}
         return board;
+    }
+
+    public synchronized void waitt()
+    {
+        try
+        {
+            wait(10);
+        }
+        catch (InterruptedException ex)
+        {
+            Logger.getLogger(Middle.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
