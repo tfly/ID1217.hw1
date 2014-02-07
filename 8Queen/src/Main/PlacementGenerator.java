@@ -38,8 +38,8 @@ public class PlacementGenerator extends Thread
 
         if (row == 8)
         {
-            //System.out.println("{" + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}");
-            mid.addToQue(board);
+            
+            mid.addToQue(board.clone());
             return;
         }
 
