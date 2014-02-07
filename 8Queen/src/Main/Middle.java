@@ -22,7 +22,11 @@ import java.util.logging.Logger;
 public class Middle
 {
 
-    private ConcurrentLinkedQueue<int[]> que = new ConcurrentLinkedQueue<>();
+    public Middle() {
+        que = new arrayQueue(60000);
+    }
+
+    private final arrayQueue que;
     private AtomicInteger solutions = new AtomicInteger();
     private int submits = 0;
     private AtomicInteger queueSize = new AtomicInteger();
@@ -31,16 +35,16 @@ public class Middle
     public void addToQue(int[] board)
     {
 
-        System.out.println("submit:" + submits + "{, " + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}"
-        );
+        //System.out.println("submit:" + submits + "{, " + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}"
+        //);
         submits++;
         queueSize.incrementAndGet();
-        que.offer(board);
+        que.add(board);
     }
 
     public void solutionFound(String comb)
     {
-        System.out.println("Solution nr " + solutions.incrementAndGet() + " found, quesize = " + que.size() + ",  " + comb);
+        System.out.println("Solution nr " + solutions.incrementAndGet() + " found, quesize = " + queueSize + ",  " + comb);
     }
 
     public int[] getFromQue() throws InterruptedException
@@ -51,12 +55,12 @@ public class Middle
             queueSize.incrementAndGet();
             waitt();
         }
-
+        
         int[] board = que.poll();
         //if (que.size() % 100 == 0)
         //  {
 
-        System.out.println("Take " + take + "{" + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}");
+        //System.out.println("Take " + take + "{" + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}");
         take++;
         //}
         return board;
