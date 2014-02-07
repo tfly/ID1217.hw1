@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 public class PlacementVerifier implements Runnable
 {
 
-    private Middle mid;
+    private QueueHandler mid;
 
-    PlacementVerifier(Middle mid)
+    PlacementVerifier(QueueHandler mid)
     {
         this.mid = mid;
     }
@@ -36,12 +36,15 @@ public class PlacementVerifier implements Runnable
             {
                 Logger.getLogger(PlacementVerifier.class.getName()).log(Level.SEVERE, null, ex);
             }
-        System.out.println("Bye " + keepGoing);
+    
+        
     }
 
-    private boolean verify(int[] board)
+    public boolean verify(int[] board)
     {
         if (board == null)
+            return true;
+        if(board.length == 0)
             return false;
             
         for (int column = 0; column < 8; column++)
@@ -75,4 +78,6 @@ public class PlacementVerifier implements Runnable
         }
         return true;
     }
+
+
 }

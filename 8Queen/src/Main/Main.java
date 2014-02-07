@@ -16,34 +16,33 @@ public class Main
 
     public static void main(String args[]) throws InterruptedException
     {
-        int numberOfverifiers = 1;
+        //sets the number of consumer threads to proccess the possible correct solutions
+        int numberOfverifiers = 5;
 
-        Middle mid = new Middle();
-        
-        
-        PlacementGenerator pg = new PlacementGenerator(mid);
-    
-      
+        //creates the
+        QueueHandler mid = new QueueHandler();
+        //a list with for all the consumer threads
         ArrayList<Thread> verifiers = new ArrayList<>(numberOfverifiers);
-        
+          //the producer of all the the possible solutions
 
+        //sets the start Time
+        long startTime = System.currentTimeMillis();
+        PlacementGenerator pg = new PlacementGenerator(mid);
+        pg.start();
+
+        //creates and starts all the verifiers
         for (int i = 0; i < numberOfverifiers; i++)
         {
-           Thread t =  new Thread(new PlacementVerifier(mid));
-            verifiers.add(t);
-            t.setName("verifier"+i);
-            t.start();
+
+            Thread thread = new Thread(new PlacementVerifier(mid));
+            verifiers.add(thread);
+            thread.start();
         }
-     
-             
-        long starttime = System.currentTimeMillis();
-        pg.start();
+
         for (Thread pv : verifiers)
             pv.join();
 
-        System.out.println("Total time to find all " + mid.getSolutions()  + " soloutions was " + (System.currentTimeMillis() - starttime) + " ms");
-         
-        
-        
+        System.out.println("Total time to find all " + mid.getSolutions() + " soloutions was " + (System.currentTimeMillis() - startTime) + " ms");
+
     }
 }

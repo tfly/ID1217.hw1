@@ -12,11 +12,12 @@ package Main;
 public class PlacementGenerator extends Thread
 {
 
-    private Middle mid;
+    
+    private final QueueHandler qh;
 
-    PlacementGenerator(Middle mid)
+    PlacementGenerator(QueueHandler qh)
     {
-        this.mid = mid;
+        this.qh = qh;
     }
     int[] board = new int[]
     {
@@ -30,11 +31,11 @@ public class PlacementGenerator extends Thread
     @Override
     public void run()
     {
-        //while(true)
-        //{
+//        while(true)
+//        {
         createPermutations(0);
-        //}
-        mid.addEndElement();
+//        }
+        qh.addEndElement();
     }
 
     public void createPermutations(int row)
@@ -43,7 +44,7 @@ public class PlacementGenerator extends Thread
         if (row == 8)
         {
             
-            mid.addToQue(board.clone());
+            qh.addToQue(board.clone());
             return;
         }
 
