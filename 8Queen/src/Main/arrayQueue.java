@@ -6,7 +6,10 @@
 
 package Main;
 
+
 import java.util.ArrayList;
+import java.util.List;
+;
 
 /**
  *
@@ -20,19 +23,26 @@ public class arrayQueue {
     public arrayQueue(int size) {
         
        this.size = size;
-        l = new ArrayList(size);
+        l = new ArrayList<>(size);
+       
+    
         
     }
     public void add(int[] data)
     {
         l.add(tail, data);
-        tail = tail+ 1 %size;
+        tail = (tail+ 1) %size;
     }
     public int[] poll()
     {
-        int[] data = l.get(head);
+        int[] data = l.remove(head);
         head = head + 1 % size;
         return data;
+    }
+    
+    public int getSize()
+    {
+        return l.size();
     }
     
     

@@ -30,7 +30,10 @@ public class PlacementGenerator extends Thread
     @Override
     public void run()
     {
+        //while(true)
+        //{
         createPermutations(0);
+        //}
         mid.addEndElement();
     }
 

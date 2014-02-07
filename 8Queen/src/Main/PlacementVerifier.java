@@ -36,6 +36,7 @@ public class PlacementVerifier implements Runnable
             {
                 Logger.getLogger(PlacementVerifier.class.getName()).log(Level.SEVERE, null, ex);
             }
+        System.out.println("Bye " + keepGoing);
     }
 
     private boolean verify(int[] board)

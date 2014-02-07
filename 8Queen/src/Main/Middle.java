@@ -5,13 +5,17 @@
  */
 package Main;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.LinkedTransferQueue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,53 +25,71 @@ import java.util.logging.Logger;
  */
 public class Middle
 {
+    public int getSolutions()
+    {
+        return solutions.get();
+    }
 
     
     public Middle() {
-        que = new ConcurrentLinkedQueue();
+        lock = new ReentrantLock();
+        que = new LinkedBlockingQueue<>();
+        notEmpty = lock.newCondition();
     }
 
-    private int[] endElement = new int[0];
-    private final ConcurrentLinkedQueue<int[]> que;
-    private AtomicInteger solutions = new AtomicInteger();
-    private int submits = 0;
-    private AtomicInteger queueSize = new AtomicInteger();
-    private int take = 0;
+    private final int[] endElement = new int[0];
+    private final LinkedBlockingQueue<int[]> que;
+    private final AtomicInteger solutions = new AtomicInteger();
+    private String a = "";
+    
+
+
+
+    private final Lock lock;
+    final Condition notEmpty;
 
     public void addToQue(int[] board)
     {
 
-        submits++;
-        queueSize.incrementAndGet();
         que.add(board);
+        synchronized(a) 
+        {
+        a.notify();
+        }
     }
 
     public void solutionFound(String comb)
     {
-        System.out.println("Solution nr " + solutions.incrementAndGet() + " found, quesize = " + queueSize + ",  " + comb);
+        System.out.println("Solution nr " + solutions.incrementAndGet() + " found, quesize = " + que.size() + ",  " + comb);
     }
 
     public int[] getFromQue() throws InterruptedException
     {
+        int[] board;
+       
+        
+          lock.tryLock(1, TimeUnit.DAYS);
+        try {
+            if(que.isEmpty())                
+                synchronized(a)
+               {
+               a.wait();
+              }
+            board = que.poll();
+            
+        } finally {
 
-        while (queueSize.decrementAndGet() < 0)
-        {
-            queueSize.incrementAndGet();
-            waitt();
+            lock.unlock();
         }
         
-        int[] board = que.poll();
         if(board == endElement)
         {
             addToQue(endElement);
             return null;
         }
-        //if (que.size() % 100 == 0)
-        //  {
-
-        //System.out.println("Take " + take + "{" + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}");
-        take++;
-        //}
+     
+        
+       
         return board;
     }
 
@@ -85,5 +107,6 @@ public class Middle
 
     public void addEndElement() {
         addToQue(endElement);
+        System.out.println("all produced");
     }
 }

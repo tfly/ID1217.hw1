@@ -14,21 +14,36 @@ import java.util.ArrayList;
 public class Main
 {
 
-    public static void main(String args[])
+    public static void main(String args[]) throws InterruptedException
     {
         int numberOfverifiers = 1;
 
         Middle mid = new Middle();
+        
+        
         PlacementGenerator pg = new PlacementGenerator(mid);
-        pg.start();
-
-        ArrayList<PlacementVerifier> verifiers = new ArrayList<>(numberOfverifiers);
+    
+      
+        ArrayList<Thread> verifiers = new ArrayList<>(numberOfverifiers);
+        
 
         for (int i = 0; i < numberOfverifiers; i++)
-            verifiers.add(new PlacementVerifier(mid));
+        {
+           Thread t =  new Thread(new PlacementVerifier(mid));
+            verifiers.add(t);
+            t.setName("verifier"+i);
+            t.start();
+        }
+     
+             
+        long starttime = System.currentTimeMillis();
+        pg.start();
+        for (Thread pv : verifiers)
+            pv.join();
 
-        for (PlacementVerifier pv : verifiers)
-            new Thread(pv).start();
-
+        System.out.println("Total time to find all " + mid.getSolutions()  + " soloutions was " + (System.currentTimeMillis() - starttime) + " ms");
+         
+        
+        
     }
 }
