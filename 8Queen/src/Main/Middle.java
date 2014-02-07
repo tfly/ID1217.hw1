@@ -22,11 +22,13 @@ import java.util.logging.Logger;
 public class Middle
 {
 
+    
     public Middle() {
-        que = new arrayQueue(60000);
+        que = new ConcurrentLinkedQueue();
     }
 
-    private final arrayQueue que;
+    private int[] endElement = new int[0];
+    private final ConcurrentLinkedQueue<int[]> que;
     private AtomicInteger solutions = new AtomicInteger();
     private int submits = 0;
     private AtomicInteger queueSize = new AtomicInteger();
@@ -35,8 +37,6 @@ public class Middle
     public void addToQue(int[] board)
     {
 
-        //System.out.println("submit:" + submits + "{, " + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}"
-        //);
         submits++;
         queueSize.incrementAndGet();
         que.add(board);
@@ -57,6 +57,11 @@ public class Middle
         }
         
         int[] board = que.poll();
+        if(board == endElement)
+        {
+            addToQue(endElement);
+            return null;
+        }
         //if (que.size() % 100 == 0)
         //  {
 
@@ -76,5 +81,9 @@ public class Middle
         {
             Logger.getLogger(Middle.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void addEndElement() {
+        addToQue(endElement);
     }
 }
