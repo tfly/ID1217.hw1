@@ -25,11 +25,12 @@ public class PlacementVerifier implements Runnable
     @Override
     public void run()
     {
-        while (true)
+        boolean keepGoing = true;
+        while (keepGoing)
             try
             {
 
-                verify(mid.getFromQue());
+                keepGoing = verify(mid.getFromQue());
             }
             catch (InterruptedException ex)
             {
@@ -37,15 +38,17 @@ public class PlacementVerifier implements Runnable
             }
     }
 
-    private void verify(int[] board)
+    private boolean verify(int[] board)
     {
         if (board == null)
-            while (true);
+            return false;
+            
         for (int column = 0; column < 8; column++)
             if (!checkleftDown(column, board) || !checkrightDown(column, board))
-                return;
+                return true;
 
         mid.solutionFound("{" + board[0] + "," + board[1] + "," + board[2] + "," + board[3] + "," + board[4] + "," + board[5] + "," + board[6] + "," + board[7] + "}");
+        return true;
     }
 
     private boolean checkleftDown(int column, int[] board)

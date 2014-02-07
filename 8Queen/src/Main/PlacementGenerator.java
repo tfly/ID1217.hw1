@@ -31,6 +31,7 @@ public class PlacementGenerator extends Thread
     public void run()
     {
         createPermutations(0);
+        mid.addEndElement();
     }
 
     public void createPermutations(int row)
